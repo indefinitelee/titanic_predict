@@ -19,6 +19,7 @@
   },
   "homepage": "https://github.com/neurocollective/titanic_predict#readme",
   "dependencies": {
+    "@tensorflow/tfjs": "^0.12.5",
     "express": "^4.15.2",
     "react": "^15.6.2",
     "react-dom": "^15.6.2",
