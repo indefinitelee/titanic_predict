@@ -34,7 +34,7 @@ const getCsvAsJson = async (filePath) => {
 
 	const filtered = arrayOfObjects.filter(obj => obj[columns[0]]);
 
-	fs.writeFile('titanic.json', JSON.stringify(filtered), (err) => {
+	fs.writeFile('./training_json/titanic.json', JSON.stringify(filtered), (err) => {
 		if (err) {
 			throw err;
 		}
@@ -42,5 +42,5 @@ const getCsvAsJson = async (filePath) => {
 	});
 };
 
-getCsvAsJson('./train.csv')
+getCsvAsJson('./csv/train.csv')
 .catch(e => console.log(e));
