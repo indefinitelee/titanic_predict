@@ -43,5 +43,4 @@ const getCsvAsJson = async (filePath) => {
 };
 
 getCsvAsJson('./train.csv')
-.then(() => console.log('done'))
 .catch(e => console.log(e));
