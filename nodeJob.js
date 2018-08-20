@@ -13,14 +13,16 @@ const getCsvAsJson = async (filePath) => {
 
 	// console.log(typeof data, data instanceof Buffer);
 	const rows = data.toString().split('\n');
-	const columns = rows[0]);
+	// PassengerId,Survived,Pclass,Name,Sex,Age,SibSp,Parch,Ticket,Fare,Cabin,Embarked
+	const columns = rows[0].split(',').map(token => token.replace('\r', ''));
+	console.log(columns);
 
-	const dataRows = rows.splice(1).map(row => {
-		return {
-			
-		};
+	const dataRows = rows.slice(1).map((row, index) => {
+		return row.split(',').reduce((accumulator, field, index) => {
+			return accumulator[columns[index]] = field;
+		}, {});
 	});
-
+	console.log(dataRows[0]);
 };
 
 getCsvAsJson('./train.csv');
