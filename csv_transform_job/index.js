@@ -1,6 +1,14 @@
 const fs = require('fs');
 const { promisify } = require('util');
 const readFile = promisify(fs.readFile);
+const { COLUMN_TRANSFORMS, TRANSFORM_ALLOW_COLUMNS } = require('../src/constants/index.js');
+const CWD = process.cwd();
+
+const writeFileCallback = err => {
+	if (err) {
+		throw err;
+	}
+};
 
 const getCsvAsJson = async (filePath) => {
 	const data = await readFile(filePath);
@@ -25,27 +33,32 @@ const getCsvAsJson = async (filePath) => {
 
 		return rowAsArray.reduce((accumulator, field, index) => {
 			const column = columns[index];
-			if (column) {
-				accumulator[column] = field;
+			if (column && TRANSFORM_ALLOW_COLUMNS.has(column)) {
+				if (COLUMN_TRANSFORMS[column]) {
+					const transformFunction = COLUMN_TRANSFORMS[column];
+					accumulator[column] = transformFunction(field);
+				} else {
+					accumulator[column] = field;
+				}
 			}
 			return accumulator;
 		}, {});
 	});
 
-	const filtered = arrayOfObjects.filter(obj => obj[columns[0]]);
+	const filtered = arrayOfObjects.filter(object => {
+		return Object.keys(object).length > 0;
+	});
 
 	const output = {
 		dataArray: filtered,
-		columns
+		columns: columns.filter(col => TRANSFORM_ALLOW_COLUMNS.has(col))
 	};
 
-	fs.writeFile('./training_json/titanic.json', JSON.stringify(output), (err) => {
-		if (err) {
-			throw err;
-		}
-		console.log('The file has been saved!');
-	});
+	const jsonString = JSON.stringify(output);
+	fs.writeFile(`${CWD}/training_json/titanic.json`, jsonString, writeFileCallback);
+	return Promise.resolve('the file has been saved!');
 };
 
-getCsvAsJson('./csv/train.csv')
-.catch(e => console.log(e));
+getCsvAsJson(`${CWD}/csv/train.csv`)
+	.then(message => console.log(`SUCCESS, ${message}`))
+	.catch(error => console.log(`ERROR, ${error}`));

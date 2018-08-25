@@ -1,4 +1,4 @@
-import * as tf from '@tensorflow/tfjs';
+// import * as tf from '@tensorflow/tfjs';
 
 class LinearRegressor {
 
@@ -25,6 +25,7 @@ class LinearRegressor {
         const labelSize = labels.length
     
         if (featureSize !== labelSize) {
+            console.log('assymetric sizes for features & labels!');
             throw new Error(`features: ${featureSize}, labels: ${labelSize}. Not the same size!`);
         }
 
@@ -40,14 +41,18 @@ class LinearRegressor {
 
     async train() {
         this.trained = true;
-        return await this.model.fit(this.features, this.labels, { epochs: 250 });
+        return this.model.fit(this.features, this.labels, { epochs: 250 });
     }
 
-    predict(labelValue) {
+    predict(featureValue) {
         if (!this.trained) {
             throw new Error("I need to train before I can predict!");
         }
-        return this.model.predict(tf.tensor2d([labelValue], [1, 1]));
+        const tensor = this.model.predict(tf.tensor2d([featureValue], [1, 1]));
+        console.log('here comes tensor info ->');
+        console.log(tensor.toString());
+        console.log(tensor.dataSync());
+        return tensor;
     }
 
 };

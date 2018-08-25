@@ -10,23 +10,10 @@ module.exports = {
           exclude: /node_modules/,
           loader: 'babel-loader',
           query: {
-            presets: ['react', 'es2017']
+            presets: ['react', 'es2017'],
+            plugins: ['transform-class-properties']
           }
         },
-        // {
-        //   test: /\.css$/,
-        //   exclude: /node_modules/,
-        //   loader: 'style-loader'
-        // }, 
-        // {
-        //   test: /\.css$/,
-        //   exclude: /node_modules/,
-        //   loader: 'css-loader',
-        //   query: {
-        //     modules: true,
-        //     localIdentName: '[name]__[local]___[hash:base64:5]'
-        //   }
-        // }
       ]
     },
     resolve: {
