@@ -2,7 +2,8 @@
 
 class LinearRegressor {
 
-    constructor() {
+    constructor(epochs = 250) {
+        this.epochs = epochs;
         this.reset();
     }
 
@@ -41,18 +42,17 @@ class LinearRegressor {
 
     async train() {
         this.trained = true;
-        return this.model.fit(this.features, this.labels, { epochs: 250 });
+        return this.model.fit(this.features, this.labels, { epochs: this.epochs });
     }
 
-    predict(featureValue) {
+    async predict(featureValue) {
         if (!this.trained) {
             throw new Error("I need to train before I can predict!");
         }
         const tensor = this.model.predict(tf.tensor2d([featureValue], [1, 1]));
-        console.log('here comes tensor info ->');
-        console.log(tensor.toString());
-        console.log(tensor.dataSync());
-        return tensor;
+        const data = await tensor.data();
+        console.log(data);
+        return data[0];
     }
 
 };

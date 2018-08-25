@@ -13362,6 +13362,7 @@ module.exports = {
         'Age': 'Age',
         'Fare': 'Fare paid'
     }
+    // GENERIC_FILTER
 };
 
 /***/ }),
@@ -13385,8 +13386,11 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 
 var LinearRegressor = function () {
     function LinearRegressor() {
+        var epochs = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 250;
+
         _classCallCheck(this, LinearRegressor);
 
+        this.epochs = epochs;
         this.reset();
     }
 
@@ -13434,7 +13438,7 @@ var LinearRegressor = function () {
                         switch (_context.prev = _context.next) {
                             case 0:
                                 this.trained = true;
-                                return _context.abrupt('return', this.model.fit(this.features, this.labels, { epochs: 250 }));
+                                return _context.abrupt('return', this.model.fit(this.features, this.labels, { epochs: this.epochs }));
 
                             case 2:
                             case 'end':
@@ -13452,16 +13456,45 @@ var LinearRegressor = function () {
         }()
     }, {
         key: 'predict',
-        value: function predict(featureValue) {
-            if (!this.trained) {
-                throw new Error("I need to train before I can predict!");
+        value: function () {
+            var _ref2 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee2(featureValue) {
+                var tensor, data;
+                return regeneratorRuntime.wrap(function _callee2$(_context2) {
+                    while (1) {
+                        switch (_context2.prev = _context2.next) {
+                            case 0:
+                                if (this.trained) {
+                                    _context2.next = 2;
+                                    break;
+                                }
+
+                                throw new Error("I need to train before I can predict!");
+
+                            case 2:
+                                tensor = this.model.predict(tf.tensor2d([featureValue], [1, 1]));
+                                _context2.next = 5;
+                                return tensor.data();
+
+                            case 5:
+                                data = _context2.sent;
+
+                                console.log(data);
+                                return _context2.abrupt('return', data[0]);
+
+                            case 8:
+                            case 'end':
+                                return _context2.stop();
+                        }
+                    }
+                }, _callee2, this);
+            }));
+
+            function predict(_x2) {
+                return _ref2.apply(this, arguments);
             }
-            var tensor = this.model.predict(tf.tensor2d([featureValue], [1, 1]));
-            console.log('here comes tensor info ->');
-            console.log(tensor.toString());
-            console.log(tensor.dataSync());
-            return tensor;
-        }
+
+            return predict;
+        }()
     }]);
 
     return LinearRegressor;
@@ -13522,55 +13555,61 @@ var Main = function (_Component) {
             var _e$target = e.target,
                 target = _e$target === undefined ? {} : _e$target;
 
-            _this.setState({ selectedColumn: target.value }, function () {
-                var _this$state = _this.state,
-                    selectedColumn = _this$state.selectedColumn,
-                    data = _this$state.data,
-                    survivalArray = _this$state.survivalArray;
-                var getDataArrayForColumn = _this.getDataArrayForColumn,
-                    lr = _this.lr;
+            var selectedColumn = target.value;
+
+            var _this$state = _this.state,
+                data = _this$state.data,
+                survivalArray = _this$state.survivalArray;
+            var getDataArrayForColumn = _this.getDataArrayForColumn,
+                lr = _this.lr;
 
 
-                console.log('setting features array from column: ' + selectedColumn);
-                var features = getDataArrayForColumn(selectedColumn, data);
-                if (!features.length) {
-                    console.log('empty features received, wtf');
-                }
-                lr.addFeaturesAndLabels(features, survivalArray);
-            });
+            console.log('setting features array from column: ' + selectedColumn);
+            var features = getDataArrayForColumn(selectedColumn, data);
+            if (!features.length) {
+                console.log('empty features received, wtf');
+            }
+            lr.addFeaturesAndLabels(features, survivalArray);
+
+            _this.setState({ selectedColumn: selectedColumn });
         };
 
-        _this.train = function () {
-            _this.setState({ loading: true }, _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee() {
-                return regeneratorRuntime.wrap(function _callee$(_context) {
-                    while (1) {
-                        switch (_context.prev = _context.next) {
-                            case 0:
-                                _context.prev = 0;
-                                _context.next = 3;
-                                return _this.lr.train();
+        _this.train = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee() {
+            return regeneratorRuntime.wrap(function _callee$(_context) {
+                while (1) {
+                    switch (_context.prev = _context.next) {
+                        case 0:
+                            _this.setState({ loading: true }, function () {
+                                return console.log('loading: ' + _this.state.loading);
+                            });
+                            _context.prev = 1;
+                            _context.next = 4;
+                            return _this.lr.train();
 
-                            case 3:
-                                console.log('training complete');
-                                _this.setState({ loading: false });
-                                _context.next = 11;
-                                break;
+                        case 4:
+                            console.log('training complete');
+                            _this.setState({ loading: false }, function () {
+                                return console.log('set state to not loading');
+                            });
+                            _context.next = 12;
+                            break;
 
-                            case 7:
-                                _context.prev = 7;
-                                _context.t0 = _context['catch'](0);
+                        case 8:
+                            _context.prev = 8;
+                            _context.t0 = _context['catch'](1);
 
-                                console.log('error during training: ' + _context.t0);
-                                _this.setState({ loading: false, error: _context.t0 });
+                            console.log('error during training: ' + _context.t0);
+                            _this.setState({ loading: false, error: _context.t0 }, function () {
+                                return console.log('loading: ' + _this.state.loading);
+                            });
 
-                            case 11:
-                            case 'end':
-                                return _context.stop();
-                        }
+                        case 12:
+                        case 'end':
+                            return _context.stop();
                     }
-                }, _callee, _this2, [[0, 7]]);
-            })));
-        };
+                }
+            }, _callee, _this2, [[1, 8]]);
+        }));
 
         _this.setPredictValue = function (e) {
             var _e$target2 = e.target,
@@ -13582,9 +13621,45 @@ var Main = function (_Component) {
             }
         };
 
-        _this.predict = function () {
-            return _this.setState({ prediction: _this.lr.predict(_this.state.guess) });
-        };
+        _this.predict = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee2() {
+            var rawPrediction, prediction;
+            return regeneratorRuntime.wrap(function _callee2$(_context2) {
+                while (1) {
+                    switch (_context2.prev = _context2.next) {
+                        case 0:
+                            _this.setState({ loading: true }, function () {
+                                return console.log('loading: ' + _this.state.loading);
+                            });
+                            _context2.prev = 1;
+                            _context2.next = 4;
+                            return _this.lr.predict(_this.state.guess);
+
+                        case 4:
+                            rawPrediction = _context2.sent;
+                            prediction = parseFloat((rawPrediction * 100).toFixed(2));
+
+                            _this.setState({ prediction: Math.abs(prediction), loading: false }, function () {
+                                console.log('loading: ' + _this.state.loading);
+                            });
+                            _context2.next = 13;
+                            break;
+
+                        case 9:
+                            _context2.prev = 9;
+                            _context2.t0 = _context2['catch'](1);
+
+                            console.log('error during predicting: ' + _context2.t0);
+                            _this.setState({ loading: false, error: _context2.t0 }, function () {
+                                return console.log('loading: ' + _this.state.loading);
+                            });
+
+                        case 13:
+                        case 'end':
+                            return _context2.stop();
+                    }
+                }
+            }, _callee2, _this2, [[1, 9]]);
+        }));
 
         _this.getDataArrayForColumn = function (columnName, allData) {
             return allData.map(function (dataObject) {
@@ -13706,11 +13781,11 @@ var Main = function (_Component) {
                         )
                     ),
                     _react2.default.createElement('div', { style: _styles2.default.br }),
-                    loading ? _react2.default.createElement(
+                    prediction ? _react2.default.createElement(
                         'div',
                         { style: _styles2.default.loading },
-                        'prediction: ',
-                        prediction
+                        prediction,
+                        '% chance of dying'
                     ) : '',
                     _react2.default.createElement(
                         'div',

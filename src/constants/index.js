@@ -58,5 +58,5 @@ module.exports = {
         'Age': 'Age',
         'Fare': 'Fare paid'
     },
-    GENERIC_FILTER
+    // GENERIC_FILTER
 };

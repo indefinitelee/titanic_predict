@@ -31,30 +31,31 @@ class Main extends Component {
 
     handleFeatureColumnChange = e => {
         const { target = {} } = e;
-        this.setState({ selectedColumn: target.value }, () => {
-            const { selectedColumn, data, survivalArray } = this.state;
-            const { getDataArrayForColumn, lr } = this;
+        const selectedColumn = target.value;
 
-            console.log(`setting features array from column: ${selectedColumn}`);
-            const features = getDataArrayForColumn(selectedColumn, data);
-            if (!features.length) {
-                console.log('empty features received, wtf');
-            } 
-            lr.addFeaturesAndLabels(features, survivalArray);
-        });
+        const { data, survivalArray } = this.state;
+        const { getDataArrayForColumn, lr } = this;
+
+        console.log(`setting features array from column: ${selectedColumn}`);
+        const features = getDataArrayForColumn(selectedColumn, data);
+        if (!features.length) {
+            console.log('empty features received, wtf');
+        } 
+        lr.addFeaturesAndLabels(features, survivalArray);
+
+        this.setState({ selectedColumn });
     }
 
-    train = () => {
-        this.setState({ loading: true }, async () => {
-            try {
-                await this.lr.train();
-                console.log('training complete');
-                this.setState({ loading: false } );
-            } catch (error) {
-                console.log(`error during training: ${error}`);
-                this.setState({ loading: false, error });
-            }
-        });
+    train = async () => {
+        this.setState({ loading: true }, () => console.log(`loading: ${this.state.loading}`));
+        try {
+            await this.lr.train();
+            console.log('training complete');
+            this.setState({ loading: false }, () => console.log('set state to not loading') );
+        } catch (error) {
+            console.log(`error during training: ${error}`);
+            this.setState({ loading: false, error }, () => console.log(`loading: ${this.state.loading}`));
+        }
     }
 
     setPredictValue = e => {
@@ -65,9 +66,23 @@ class Main extends Component {
         }
     }
 
-    predict = () => this.setState({ prediction: this.lr.predict(this.state.guess) })
+    predict = async () => {
+        this.setState({ loading: true }, () => console.log(`loading: ${this.state.loading}`));
+        try {
+            const rawPrediction = await this.lr.predict(this.state.guess);
+            const prediction = parseFloat((rawPrediction * 100).toFixed(2));
+            this.setState({ prediction: Math.abs(prediction), loading: false }, () => {
+                console.log(`loading: ${this.state.loading}`);
+            });
+        } catch (error) {
+            console.log(`error during predicting: ${error}`);
+            this.setState({ loading: false, error }, () => console.log(`loading: ${this.state.loading}`));
+        }
+    }
 
-    getDataArrayForColumn = (columnName, allData) => allData.map(dataObject => dataObject[columnName])
+    getDataArrayForColumn = (columnName, allData) => {
+        return allData.map(dataObject => dataObject[columnName]);
+    }
 
     reset = () => this.lr.reset()
 
@@ -120,7 +135,11 @@ class Main extends Component {
 
                     <div style={styles.br} />
 
-                    {(loading) ? <div style={styles.loading}>prediction: {prediction}</div>: ''}
+                    {
+                        (prediction) ?
+                            <div style={styles.loading}>{prediction}% chance of dying</div>
+                                : ''
+                    }
 
                     <div>
                         <button onClick={this.reset}>Reset</button>
