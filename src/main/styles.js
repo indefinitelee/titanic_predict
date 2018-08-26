@@ -31,7 +31,8 @@ const styles = {
     },
     hOne: {
         backgroundColor: 'white',
-        display: 'inline-block'
+        display: 'inline-block',
+        padding: '5px'
     }
 };
 
