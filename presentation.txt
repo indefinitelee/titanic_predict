@@ -1,0 +1,5 @@
+https://hbr.org/2018/08/what-data-scientists-really-do-according-to-35-data-scientists
+
+"Nearly all of my guests understand that working data scientists make their daily bread and butter through 
+data collection and data cleaning; building dashboards and reports; data visualization; 
+statistical inference; communicating results to key stakeholders; and convincing decision makers of their results."

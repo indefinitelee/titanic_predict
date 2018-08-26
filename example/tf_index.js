@@ -41,8 +41,9 @@ async function myFirstTfjs() {
 
   // Use the model to do inference on a data point the model hasn't seen.
   // Should print approximately 39.
-  document.getElementById('micro_out_div').innerText +=
-      model.predict(tf.tensor2d([20], [1, 1]));
+  const prediction = model.predict(tf.tensor2d([20], [1, 1]));
+  const data = await prediction.data();
+  document.getElementById('micro_out_div').innerText += data
 }
 
 myFirstTfjs();

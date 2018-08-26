@@ -31,13 +31,25 @@ class LinearRegressor {
         }
 
         const sizePair = [features.length, 1];
+
+        const detective = element => typeof element !== 'number' || isNaN(element);
+
+        const badFeature = features.find(detective);
+        const badLabel = labels.find(detective);
+        if (typeof badFeature !== 'undefined') {
+            console.log('bad feature found!', badFeature);
+            return;
+        }
+        if (typeof badLabel !== 'undefined') {
+            console.log('bad label found!', badLabel);
+            return;
+        }
   
-        // Generate some synthetic data for training. (y = 2x - 1)
         const xs = tf.tensor2d(features, sizePair);
         const ys = tf.tensor2d(labels, sizePair);
 
         this.features = xs;
-        this.labels = xs;
+        this.labels = ys;
     }
 
     async train() {
@@ -51,7 +63,7 @@ class LinearRegressor {
         }
         const tensor = this.model.predict(tf.tensor2d([featureValue], [1, 1]));
         const data = await tensor.data();
-        console.log(data);
+        console.log("data:", data);
         return data[0];
     }
 

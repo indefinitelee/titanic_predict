@@ -35,10 +35,12 @@ const COLUMN_TRANSFORMS = {
         if (!maleOrFemaleString || typeof maleOrFemaleString !== 'string') {
             return null;
         }
-        if (maleOrFemaleString.toLowerCase() === 'm') {
+        if (maleOrFemaleString.toLowerCase() === 'male') {
             return 0;
+        } else if (maleOrFemaleString.toLowerCase() === 'female') {
+            return 1;
         }
-        return 1;
+        return null;
     },
     'Pclass': classString => parseFloat(classString),
     'Age': ageString => parseFloat(ageString),

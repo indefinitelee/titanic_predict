@@ -17,7 +17,6 @@ class Main extends Component {
             data: props.json.dataArray,
             columns: props.json.columns,
             survivalArray: this.getDataArrayForColumn(SURVIVED, props.json.dataArray),
-            //json: props.json,
             error: null,
             loading: false,
             selectedColumn: null,
@@ -29,32 +28,43 @@ class Main extends Component {
         this.lr = new LinearRegressor();
     }
 
+    cleanFeaturesAndLabels = (features, survivalArray) => {
+        const badIndices = features.reduce((accumulator, feature, index) => {
+            if (typeof feature !== 'number' || isNaN(feature)) {
+                accumulator.add(index);
+            }
+            return accumulator;
+        }, new Set());
+
+        const theFilter = (element, index) => !badIndices.has(index);
+
+        const cleanFeatures = features.filter(theFilter);
+        const cleanLabels = survivalArray.filter(theFilter);
+        return [cleanFeatures, cleanLabels];
+    }
+
     handleFeatureColumnChange = e => {
         const { target = {} } = e;
         const selectedColumn = target.value;
 
         const { data, survivalArray } = this.state;
-        const { getDataArrayForColumn, lr } = this;
+        const { getDataArrayForColumn, lr, cleanFeaturesAndLabels } = this;
 
-        console.log(`setting features array from column: ${selectedColumn}`);
         const features = getDataArrayForColumn(selectedColumn, data);
-        if (!features.length) {
-            console.log('empty features received, wtf');
-        } 
-        lr.addFeaturesAndLabels(features, survivalArray);
-
+        const [cleanedFeatures, cleanedLabels] = cleanFeaturesAndLabels(features, survivalArray);
+        lr.addFeaturesAndLabels(cleanedFeatures, cleanedLabels);
         this.setState({ selectedColumn });
     }
 
     train = async () => {
-        this.setState({ loading: true }, () => console.log(`loading: ${this.state.loading}`));
+        this.setState({ loading: true });
         try {
             await this.lr.train();
-            console.log('training complete');
-            this.setState({ loading: false }, () => console.log('set state to not loading') );
+            console.log('*** TRAINING COMPLETE ***');
+            this.setState({ loading: false });
         } catch (error) {
             console.log(`error during training: ${error}`);
-            this.setState({ loading: false, error }, () => console.log(`loading: ${this.state.loading}`));
+            this.setState({ loading: false, error });
         }
     }
 
@@ -67,39 +77,40 @@ class Main extends Component {
     }
 
     predict = async () => {
-        this.setState({ loading: true }, () => console.log(`loading: ${this.state.loading}`));
+        this.setState({ loading: true });
         try {
             const rawPrediction = await this.lr.predict(this.state.guess);
             const prediction = parseFloat((rawPrediction * 100).toFixed(2));
-            this.setState({ prediction: Math.abs(prediction), loading: false }, () => {
-                console.log(`loading: ${this.state.loading}`);
-            });
+            this.setState({ prediction: Math.abs(prediction), loading: false });
         } catch (error) {
             console.log(`error during predicting: ${error}`);
-            this.setState({ loading: false, error }, () => console.log(`loading: ${this.state.loading}`));
+            this.setState({ loading: false, error });
         }
     }
 
-    getDataArrayForColumn = (columnName, allData) => {
-        return allData.map(dataObject => dataObject[columnName]);
-    }
+    getDataArrayForColumn = (columnName, allData) => allData.map(dataObject => dataObject[columnName]);
 
     reset = () => this.lr.reset()
 
     render() {
-        console.log(this.state);
         const { loading, error, prediction, selectedColumn } = this.state;
         const { displayColumns } = this;
+
+        console.log(this.state);
 
         return (
             <div style={styles.main}>
                 <header style={styles.header}>
-                    <h1>Titanic Predictor</h1>
+                    <h1 style={styles.hOne}>Titanic Predictor</h1>
                 </header>
-                <main>
+                <main style={styles.mainContent}>
 
-                    {(loading) ? <div style={styles.loading}>Loading...</div>: ''}
-                    {(error) ? <div style={styles.loading}>Golly gosh, there was an error</div>: ''}
+                    <div style={(loading) ? styles.loading : styles.hide}>
+                        Loading...
+                    </div>
+                    <div style={(error) ? styles.loading : styles.hide}>
+                        Golly gosh, there was an error
+                    </div>
 
                     <label>Select Feature</label>
                     <section>
@@ -135,11 +146,9 @@ class Main extends Component {
 
                     <div style={styles.br} />
 
-                    {
-                        (prediction) ?
-                            <div style={styles.loading}>{prediction}% chance of dying</div>
-                                : ''
-                    }
+                    <div style={(typeof prediction === 'number') ? styles.loading : styles.hide}>
+                        {prediction}% chance of dying
+                    </div>
 
                     <div>
                         <button onClick={this.reset}>Reset</button>
