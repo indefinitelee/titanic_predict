@@ -13577,7 +13577,6 @@ var Main = function (_Component) {
                 return accumulator;
             }, new Set());
 
-            console.log('badIndices set:', badIndices);
             var theFilter = function theFilter(element, index) {
                 return !badIndices.has(index);
             };
@@ -13666,27 +13665,25 @@ var Main = function (_Component) {
 
                         case 4:
                             rawPrediction = _context2.sent;
-
-                            console.log('rawPrediction:', rawPrediction);
                             prediction = parseFloat((rawPrediction * 100).toFixed(2));
 
                             _this.setState({ prediction: Math.abs(prediction), loading: false });
-                            _context2.next = 14;
+                            _context2.next = 13;
                             break;
 
-                        case 10:
-                            _context2.prev = 10;
+                        case 9:
+                            _context2.prev = 9;
                             _context2.t0 = _context2['catch'](1);
 
                             console.log('error during predicting: ' + _context2.t0);
                             _this.setState({ loading: false, error: _context2.t0 });
 
-                        case 14:
+                        case 13:
                         case 'end':
                             return _context2.stop();
                     }
                 }
-            }, _callee2, _this2, [[1, 10]]);
+            }, _callee2, _this2, [[1, 9]]);
         }));
 
         _this.getDataArrayForColumn = function (columnName, allData) {
@@ -13879,7 +13876,8 @@ var styles = {
     },
     hOne: {
         backgroundColor: 'white',
-        display: 'inline-block'
+        display: 'inline-block',
+        padding: '5px'
     }
 };
 

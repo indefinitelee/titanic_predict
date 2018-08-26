@@ -6,7 +6,6 @@ const styles = {
         padding: '50px',
         backgroundImage: 'url("https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSVmEV8jiyYtmC5pAEpkn1ybpOT-a9sNRIgU90nZWKfsSYVWo2-pg")',
         height: '85%',
-        // backgroundRepeat: 'no-repeat',
         backgroundSize: 'cover',
         backgroundPosition: 'center'
     },
