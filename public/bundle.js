@@ -59,7 +59,7 @@
 /******/ 	
 /******/ 	
 /******/ 	var hotApplyOnUpdate = true;
-/******/ 	var hotCurrentHash = "4053b93b70552f182279"; // eslint-disable-line no-unused-vars
+/******/ 	var hotCurrentHash = "3769055bcd4e0d87ccef"; // eslint-disable-line no-unused-vars
 /******/ 	var hotCurrentModuleData = {};
 /******/ 	var hotCurrentChildModule; // eslint-disable-line no-unused-vars
 /******/ 	var hotCurrentParents = []; // eslint-disable-line no-unused-vars
@@ -10079,17 +10079,17 @@ var Main = function (_Component) {
                             _constants.COLUMN_DISPLAY_STRINGS[selectedColumn],
                             ' value for survival prediction'
                         ),
-                        _react2.default.createElement('input', { type: 'text', onChange: this.setPredictValue }),
+                        _react2.default.createElement('input', { 'data-cy': 'predictvalue', type: 'text', onChange: this.setPredictValue }),
                         _react2.default.createElement(
                             'button',
-                            { onClick: this.predict, disabled: loading },
+                            { 'data-cy': 'submit-button', onClick: this.predict, disabled: loading },
                             'Predict'
                         )
                     ),
                     _react2.default.createElement('div', { style: _styles2.default.br }),
                     _react2.default.createElement(
                         'div',
-                        { style: typeof prediction === 'number' ? _styles2.default.loading : _styles2.default.hide },
+                        { 'data-cy': 'result', style: typeof prediction === 'number' ? _styles2.default.loading : _styles2.default.hide },
                         prediction,
                         '% chance of dying'
                     ),
@@ -10098,7 +10098,7 @@ var Main = function (_Component) {
                         null,
                         _react2.default.createElement(
                             'button',
-                            { onClick: this.reset },
+                            { 'data-cy': 'reset', onClick: this.reset },
                             'Reset'
                         )
                     )

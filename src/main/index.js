@@ -143,18 +143,18 @@ class Main extends Component {
                         <label>
                             Enter a {COLUMN_DISPLAY_STRINGS[selectedColumn]} value for survival prediction
                         </label>
-                        <input type="text" onChange={this.setPredictValue}/>
-                        <button onClick={this.predict} disabled={loading}>Predict</button>
+                        <input data-cy="predictvalue" type="text" onChange={this.setPredictValue}/>
+                        <button data-cy="submit-button" onClick={this.predict} disabled={loading}>Predict</button>
                     </div>
 
                     <div style={styles.br} />
 
-                    <div style={(typeof prediction === 'number') ? styles.loading : styles.hide}>
+                    <div data-cy="result" style={(typeof prediction === 'number') ? styles.loading : styles.hide}>
                         {prediction}% chance of dying
                     </div>
 
                     <div>
-                        <button onClick={this.reset}>Reset</button>
+                        <button data-cy="reset" onClick={this.reset}>Reset</button>
                     </div>
 
                 </main>

@@ -1,13 +1,10 @@
 describe('Does it Float?', function() {
-  it('Visits the Titanic Predctor', function() {
-    cy.visit('localhost:3000') // also set as baseURL in a config file
-	})
-	
-	it('selects some stuff', () => {
+  it('submits a prediction', function() {
+    cy.visit('') 
 		cy.get('[data-cy=select]').select('Age')
-	})
-
-	it('trains in vain', ()=> {
 		cy.get('[data-cy=train]').click()
+		cy.get('[data-cy=predictvalue').type(30)
+		cy.get('[data-cy=submit-button').click()
+		cy.get('[data-cy=result').should('have.css', 'display', 'block')
 	})
 })
