@@ -114,14 +114,17 @@ class Main extends Component {
 
                     <label>Select Feature</label>
                     <section>
-                        <select onChange={this.handleFeatureColumnChange} value={selectedColumn}>
+                        <select 
+                            data-cy="select"
+                            onChange={this.handleFeatureColumnChange} 
+                            value={selectedColumn}>
                             <option
                                 value={undefined}
                             >
                                 select a feature...
                             </option>
                             {displayColumns.map(column => (
-                                <option
+                                <option 
                                     value={column}
                                 >
                                     {COLUMN_DISPLAY_STRINGS[column]}

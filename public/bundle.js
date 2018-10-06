@@ -13762,11 +13762,14 @@ var Main = function (_Component) {
                         null,
                         _react2.default.createElement(
                             'select',
-                            { onChange: this.handleFeatureColumnChange, value: selectedColumn },
+                            {
+                                'data-cy': 'select',
+                                onChange: this.handleFeatureColumnChange,
+                                value: selectedColumn },
                             _react2.default.createElement(
                                 'option',
                                 {
-                                    value: null
+                                    value: undefined
                                 },
                                 'select a feature...'
                             ),
