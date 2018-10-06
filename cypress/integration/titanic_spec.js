@@ -6,4 +6,8 @@ describe('Does it Float?', function() {
 	it('selects some stuff', () => {
 		cy.get('[data-cy=select]').select('Age')
 	})
+
+	it('trains in vain', ()=> {
+		cy.get('[data-cy=train]').click()
+	})
 })

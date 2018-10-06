@@ -135,7 +135,7 @@ class Main extends Component {
 
                     <div style={styles.br} />
 
-                    <button onClick={this.train} disabled={loading}>Train</button>
+                    <button data-cy="train" onClick={this.train} disabled={loading}>Train</button>
 
                     <div style={styles.br} />
 

@@ -1,7 +1,11 @@
+const webpack = require('webpack');
+const path = require('path');
+
 module.exports = {
     entry: ['babel-polyfill','./src/index.js'],
     output: {
-      filename: "./public/bundle.js"
+      filename: 'bundle.js',
+      path: path.resolve(__dirname, 'public')
     },
     module: {
       loaders: [
@@ -18,5 +22,13 @@ module.exports = {
     },
     resolve: {
       extensions: ['.js']
-    }
+    },
+    devServer: {
+      contentBase: './public',
+      hot: true
+    },
+    plugins: [
+
+      new webpack.HotModuleReplacementPlugin()
+    ]
   }
