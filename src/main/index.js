@@ -116,7 +116,7 @@ class Main extends Component {
                     <section>
                         <select onChange={this.handleFeatureColumnChange} value={selectedColumn}>
                             <option
-                                value={null}
+                                value={undefined}
                             >
                                 select a feature...
                             </option>

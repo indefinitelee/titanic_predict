@@ -8,7 +8,8 @@
     "build": "webpack",
     "start": "node server/index.js",
     "json": "node csv_transform_job/index.js",
-    "go": "webpack && node server/index.js"
+    "go": "webpack && node server/index.js",
+    "cypress:open": "cypress open"
   },
   "repository": {
     "type": "git",
